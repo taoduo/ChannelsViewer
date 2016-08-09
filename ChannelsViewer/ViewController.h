@@ -9,7 +9,10 @@
 #import <Cocoa/Cocoa.h>
 
 @interface ViewController : NSViewController
-
+@property (weak) IBOutlet NSImageView *imageView;
+- (IBAction)importButtonClick:(id)sender;
+- (IBAction)nextButtonClick:(id)sender;
+- (IBAction)prevButtonClick:(id)sender;
 
 @end
 
