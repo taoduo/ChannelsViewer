@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 @interface ViewController : NSViewController
+@property (weak) IBOutlet NSTextField *channelLabel;
 @property (weak) IBOutlet NSTextField *countLabel;
 @property (weak) IBOutlet NSImageView *imageView;
 - (IBAction)importButtonClick:(id)sender;

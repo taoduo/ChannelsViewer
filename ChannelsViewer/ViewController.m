@@ -11,6 +11,7 @@
 @implementation ViewController
 @synthesize imageView;
 @synthesize countLabel;
+@synthesize channelLabel;
 
 NSMutableArray *fileList;
 signed int currentIndex;
@@ -29,6 +30,7 @@ int total;
     [imageView setImage:image];
     NSString *text = [NSString stringWithFormat:@"%d / %d", currentIndex, total];
     [countLabel setStringValue:text];
+    [channelLabel setStringValue: [[fileList[currentIndex] absoluteString] lastPathComponent]];
 }
 
 - (void)loadFolder: (NSString*) path {
@@ -67,7 +69,6 @@ int total;
                     [self loadFolder: [url path]];
                 }
             }
-            
         }
     }];
 }

@@ -674,7 +674,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S0W-A4-Kj1">
-                                <rect key="frame" x="17" y="17" width="632" height="499"/>
+                                <rect key="frame" x="17" y="17" width="632" height="478"/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="axesIndependently" imageFrameStyle="photo" id="Aaa-65-7ma"/>
                             </imageView>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dMh-rg-i59">
@@ -715,9 +715,18 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kod-GV-R14">
+                                <rect key="frame" x="83" y="500" width="500" height="17"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="&lt;No File&gt;" id="2HN-3M-ntB">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                     </view>
                     <connections>
+                        <outlet property="channelLabel" destination="kod-GV-R14" id="3t2-gY-gmJ"/>
                         <outlet property="countLabel" destination="JzY-ny-6fN" id="x6D-nd-d4X"/>
                         <outlet property="imageView" destination="S0W-A4-Kj1" id="9ra-Hu-fgP"/>
                     </connections>
