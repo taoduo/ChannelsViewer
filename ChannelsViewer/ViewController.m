@@ -21,6 +21,13 @@ int total;
     [super viewDidLoad];
 }
 
+- (void)setRepresentedObject:(id)representedObject {
+    [super setRepresentedObject:representedObject];
+}
+
+/**
+ * views to update: image, channel label and index / count lable
+ */
 - (void) updateView {
     if (currentIndex < 0) {
         currentIndex = 0;
@@ -33,6 +40,10 @@ int total;
     [channelLabel setStringValue: [[fileList[currentIndex] absoluteString] lastPathComponent]];
 }
 
+/**
+ * load the folder at path
+ * folder contains a lines.txt which has all the frequencies of the lines to look at and many jpg files.
+ */
 - (void)loadFolder: (NSString*) path {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *directoryURL = [NSURL URLWithString:path]; // URL pointing to the directory you want to browse
@@ -43,20 +54,43 @@ int total;
                                          options:0
                                          errorHandler:nil];
     fileList = [NSMutableArray array];
+    NSString *p;
+    NSString *ext;
     for (NSURL *url in enumerator) {
-        [fileList addObject:url];
+        p = [url path];
+        ext = [path pathExtension];
+        if ([ext isEqualToString:@"txt"]) {
+            [self readFrequency: url];
+        }
+        if ([ext isEqualToString:@"jpg"]) {
+            [fileList addObject: url];
+        }
     }
     currentIndex = -1;
     total = (int) [fileList count] - 1;
     [self updateView];
 }
 
-- (void)setRepresentedObject:(id)representedObject {
-    [super setRepresentedObject:representedObject];
+/**
+ * Read the frequencies of the lines at url, a txt file
+ * txt file format eg.
+ * 13.5
+ * 19.5
+ * 909.232
+ */
+- (void)readFrequency: (NSURL*) url {
+    NSString *str = [NSString stringWithContentsOfFile:[url path] encoding:NSUTF8StringEncoding error:nil];
+    NSArray *freqs=[str componentsSeparatedByString:@"\n"];
+    // init the hashmap
+    
+    // init the views
 }
 
+/**
+ * click event: get the path and load the folder
+ */
 - (IBAction)importButtonClick:(id)sender {
-    NSOpenPanel*    panel = [NSOpenPanel openPanel];
+    NSOpenPanel* panel = [NSOpenPanel openPanel];
     [panel setCanChooseDirectories:YES];
     [panel beginWithCompletionHandler:^(NSInteger result){
         if (result == NSFileHandlingPanelOKButton) {
