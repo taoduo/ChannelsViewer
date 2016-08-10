@@ -204,6 +204,7 @@
 				TargetAttributes = {
 					2C3773561D567441006FF3E9 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = 5KFT6MYS2L;
 					};
 					2C37736C1D567441006FF3E9 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -400,11 +401,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = ChannelsViewer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = duotao.ChannelsViewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -412,11 +416,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = ChannelsViewer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = duotao.ChannelsViewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -489,6 +496,7 @@
 				2C3773831D567441006FF3E9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2C3773841D567441006FF3E9 /* Build configuration list for PBXNativeTarget "ChannelsViewerTests" */ = {
 			isa = XCConfigurationList;
@@ -497,6 +505,7 @@
 				2C3773861D567441006FF3E9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2C3773871D567441006FF3E9 /* Build configuration list for PBXNativeTarget "ChannelsViewerUITests" */ = {
 			isa = XCConfigurationList;
@@ -505,6 +514,7 @@
 				2C3773891D567441006FF3E9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

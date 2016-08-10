@@ -16,6 +16,7 @@
 NSMutableArray *fileList;
 signed int currentIndex;
 int total;
+NSMutableDictionary *freqChanMap;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -58,7 +59,9 @@ int total;
     NSString *ext;
     for (NSURL *url in enumerator) {
         p = [url path];
-        ext = [path pathExtension];
+        ext = [p pathExtension];
+        NSLog(@"path: %@", p);
+        NSLog(@"ext: %@", ext);
         if ([ext isEqualToString:@"txt"]) {
             [self readFrequency: url];
         }
@@ -80,10 +83,17 @@ int total;
  */
 - (void)readFrequency: (NSURL*) url {
     NSString *str = [NSString stringWithContentsOfFile:[url path] encoding:NSUTF8StringEncoding error:nil];
-    NSArray *freqs=[str componentsSeparatedByString:@"\n"];
+    NSArray *freqstr=[str componentsSeparatedByString:@"\n"];
+    NSMutableArray *freqs;
+    for (NSString *str in freqstr) {
+        [freqs addObject: [NSNumber numberWithDouble:[str doubleValue]]];
+    }
     // init the hashmap
+    freqChanMap = [[NSMutableDictionary alloc] init];
+    for (NSNumber *f in freqs) {
+        freqChanMap[f] = [[NSMutableArray alloc] init];
+    }
     
-    // init the views
 }
 
 /**
