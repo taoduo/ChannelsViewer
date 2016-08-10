@@ -725,14 +725,13 @@
                             </textField>
                             <comboBox verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rx5-Vi-XCs">
                                 <rect key="frame" x="670" y="351" width="91" height="26"/>
-                                <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="umN-cp-quE">
+                                <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="2" id="umN-cp-quE">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <objectValues>
-                                        <string>Item 1</string>
-                                        <string>Item 2</string>
-                                        <string>Item 3</string>
+                                        <string>line 1</string>
+                                        <string>line 2</string>
                                     </objectValues>
                                 </comboBoxCell>
                             </comboBox>
@@ -757,6 +756,7 @@
                         <outlet property="channelLabel" destination="kod-GV-R14" id="3t2-gY-gmJ"/>
                         <outlet property="countLabel" destination="JzY-ny-6fN" id="x6D-nd-d4X"/>
                         <outlet property="imageView" destination="S0W-A4-Kj1" id="9ra-Hu-fgP"/>
+                        <outlet property="linesBox" destination="rx5-Vi-XCs" id="33V-KC-PCE"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

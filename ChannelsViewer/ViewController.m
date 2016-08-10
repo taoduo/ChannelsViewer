@@ -12,6 +12,7 @@
 @synthesize imageView;
 @synthesize countLabel;
 @synthesize channelLabel;
+@synthesize linesBox;
 
 NSMutableArray *fileList;
 signed int currentIndex;
@@ -60,8 +61,6 @@ NSMutableDictionary *freqChanMap;
     for (NSURL *url in enumerator) {
         p = [url path];
         ext = [p pathExtension];
-        NSLog(@"path: %@", p);
-        NSLog(@"ext: %@", ext);
         if ([ext isEqualToString:@"txt"]) {
             [self readFrequency: url];
         }
@@ -82,18 +81,14 @@ NSMutableDictionary *freqChanMap;
  * 909.232
  */
 - (void)readFrequency: (NSURL*) url {
-    NSString *str = [NSString stringWithContentsOfFile:[url path] encoding:NSUTF8StringEncoding error:nil];
+    [linesBox removeAllItems];
+    NSString *str = [NSString stringWithContentsOfFile:[url path] encoding:NSUTF8StringEncoding error: nil];
     NSArray *freqstr=[str componentsSeparatedByString:@"\n"];
-    NSMutableArray *freqs;
     for (NSString *str in freqstr) {
-        [freqs addObject: [NSNumber numberWithDouble:[str doubleValue]]];
+        freqChanMap[str] = [[NSMutableArray alloc] init];
+        [linesBox addItemWithObjectValue:str];
     }
-    // init the hashmap
-    freqChanMap = [[NSMutableDictionary alloc] init];
-    for (NSNumber *f in freqs) {
-        freqChanMap[f] = [[NSMutableArray alloc] init];
-    }
-    
+    [linesBox setNumberOfVisibleItems: [freqstr count]];
 }
 
 /**
