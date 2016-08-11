@@ -20,6 +20,7 @@ NSMutableArray *fileList;
 signed int currentIndex;
 int total;
 NSMutableDictionary *freqChanMap;
+NSURL *dataRoot;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -62,6 +63,7 @@ NSMutableDictionary *freqChanMap;
  */
 - (void)loadFolder: (NSString*) path {
     [fileList removeAllObjects];
+    dataRoot = [NSURL URLWithString:path];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *directoryURL = [NSURL URLWithString:path]; // URL pointing to the directory you want to browse
     NSArray *keys = [NSArray arrayWithObject:NSURLIsDirectoryKey];
@@ -84,6 +86,7 @@ NSMutableDictionary *freqChanMap;
     }
     currentIndex = -1;
     total = (int) [fileList count] - 1;
+    
     [self updateView];
 }
 
@@ -149,10 +152,6 @@ NSMutableDictionary *freqChanMap;
     NSMutableArray *channels = [freqChanMap objectForKey:selectedItem]; */
     // get the channel name (file name)
     NSString *channelName = [[fileList[currentIndex] URLByDeletingPathExtension] lastPathComponent];
-    if ([channelName hasSuffix:@"_data"]) {
-        int sl = (int) [@"_data" length];
-        channelName = [channelName substringToIndex:[channelName length] - sl - 1];
-    }
     [currentChannels addObject:channelName];
     // NSLog(@"%d", (int) [currentChannels count]);
     [chanTable reloadData];
@@ -164,9 +163,12 @@ NSMutableDictionary *freqChanMap;
     currentChannels = [freqChanMap valueForKey:si];
     [chanTable reloadData];
 }
-
+/*
+ * Export: a summary txt and all the pictures of the channels
+ */
 -(IBAction)exportButtonClick:(id)sender {
-    NSString *filename = @"summary";
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *filename = @"Summary";
     for (id key in freqChanMap) {
         filename = [NSString stringWithFormat:@"%@_%@", filename, key];
     }
@@ -176,17 +178,31 @@ NSMutableDictionary *freqChanMap;
     for (id key in freqChanMap) {
         toWrite = [NSString stringWithFormat:@"%@%@", toWrite, [NSString stringWithFormat:@"\n--- %@ Hz ---\n", key]];
         NSMutableArray *chns = [freqChanMap valueForKey:key];
+        NSURL *targetDir = [NSURL URLWithString:[NSString stringWithFormat:@"line_%@", key]];
+        [fileManager createDirectoryAtPath:[targetDir path] withIntermediateDirectories:NO attributes:nil error:nil];
         for (NSString* c in chns) {
+            // for summary.txt
             toWrite = [NSString stringWithFormat:@"%@%@", toWrite, [NSString stringWithFormat:@"%@\n", c]];
+            // original picture path
+            NSURL *fp = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@/%@.jpg", [dataRoot absoluteString], c]];
+            // target path
+            NSURL *ft = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@/%@/%@.jpg", [fileManager currentDirectoryPath], [targetDir absoluteString], c]];
+            // copy from origin to targetDir
+            NSError *error;
+            BOOL s = [fileManager copyItemAtURL:fp toURL:ft error:&error];
+            if (!s) {
+                NSLog(@"Write failed with error: %@", error);
+            }
         }
     }
     BOOL success = [toWrite writeToFile:filename atomically:true encoding:NSUTF8StringEncoding error:nil];
+    
     if (success) {
         NSAlert *alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:@"OK"];
         [alert setMessageText:@"Export Complete"];
         [alert setAlertStyle:NSInformationalAlertStyle];
         [alert runModal];
-    }
+    }   
 }
 @end
