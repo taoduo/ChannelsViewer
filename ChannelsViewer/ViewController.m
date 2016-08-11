@@ -13,7 +13,9 @@
 @synthesize countLabel;
 @synthesize channelLabel;
 @synthesize linesBox;
-
+@synthesize chanTable;
+@synthesize chanTableHeader;
+@synthesize currentChannels;
 NSMutableArray *fileList;
 signed int currentIndex;
 int total;
@@ -21,10 +23,22 @@ NSMutableDictionary *freqChanMap;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    freqChanMap = [[NSMutableDictionary alloc] init];
+    fileList = [NSMutableArray array];
 }
 
 - (void)setRepresentedObject:(id)representedObject {
     [super setRepresentedObject:representedObject];
+}
+
+- (NSInteger) numberOfRowsInTableView:(NSTableView *)tableView {
+    // NSLog(@"num:%d",  (int)[currentChannels count]);
+    return [currentChannels count];
+}
+
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    // NSLog(@"%@", currentChannels[row]);
+    return currentChannels[row];
 }
 
 /**
@@ -47,6 +61,7 @@ NSMutableDictionary *freqChanMap;
  * folder contains a lines.txt which has all the frequencies of the lines to look at and many jpg files.
  */
 - (void)loadFolder: (NSString*) path {
+    [fileList removeAllObjects];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *directoryURL = [NSURL URLWithString:path]; // URL pointing to the directory you want to browse
     NSArray *keys = [NSArray arrayWithObject:NSURLIsDirectoryKey];
@@ -55,7 +70,6 @@ NSMutableDictionary *freqChanMap;
                                          includingPropertiesForKeys:keys
                                          options:0
                                          errorHandler:nil];
-    fileList = [NSMutableArray array];
     NSString *p;
     NSString *ext;
     for (NSURL *url in enumerator) {
@@ -88,11 +102,13 @@ NSMutableDictionary *freqChanMap;
         freqChanMap[str] = [[NSMutableArray alloc] init];
         [linesBox addItemWithObjectValue:str];
     }
+    [linesBox selectItemAtIndex:0];
+    currentChannels = freqChanMap[[linesBox objectValueOfSelectedItem]];
     [linesBox setNumberOfVisibleItems: [freqstr count]];
 }
 
 /**
- * click event: get the path and load the folder
+ * import button click event: get the path and load the folder
  */
 - (IBAction)importButtonClick:(id)sender {
     NSOpenPanel* panel = [NSOpenPanel openPanel];
@@ -125,5 +141,26 @@ NSMutableDictionary *freqChanMap;
         currentIndex--;
         [self updateView];
     }
+}
+
+- (IBAction)addButtonClick:(id)sender {
+    /* NSString *selectedItem = [linesBox objectValueOfSelectedItem];
+    NSMutableArray *channels = [freqChanMap objectForKey:selectedItem]; */
+    // get the channel name (file name)
+    NSString *channelName = [[fileList[currentIndex] URLByDeletingPathExtension] lastPathComponent];
+    if ([channelName hasSuffix:@"_data"]) {
+        int sl = (int) [@"_data" length];
+        channelName = [channelName substringToIndex:[channelName length] - sl - 1];
+    }
+    [currentChannels addObject:channelName];
+    // NSLog(@"%d", (int) [currentChannels count]);
+    [chanTable reloadData];
+}
+
+-(IBAction)selectedLineChange:(id)sender {
+    NSComboBox* cb = (NSComboBox*) sender;
+    NSString *si = [cb objectValueOfSelectedItem];
+    currentChannels = [freqChanMap valueForKey:si];
+    [chanTable reloadData];
 }
 @end

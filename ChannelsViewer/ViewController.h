@@ -8,13 +8,17 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface ViewController : NSViewController
+@interface ViewController : NSViewController <NSTableViewDataSource>
+@property (weak) IBOutlet NSTableHeaderView *chanTableHeader;
+@property (weak) IBOutlet NSTableView *chanTable;
 @property (weak) IBOutlet NSComboBox *linesBox;
 @property (weak) IBOutlet NSTextField *channelLabel;
 @property (weak) IBOutlet NSTextField *countLabel;
 @property (weak) IBOutlet NSImageView *imageView;
+@property NSMutableArray* currentChannels;
 - (IBAction)importButtonClick:(id)sender;
 - (IBAction)nextButtonClick:(id)sender;
 - (IBAction)prevButtonClick:(id)sender;
-
+- (IBAction)addButtonClick:(id)sender;
+- (IBAction)selectedLineChange:(id)sender;
 @end
