@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
+        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -670,7 +671,7 @@
             <objects>
                 <viewController id="XfG-lQ-9wD" customClass="ViewController" sceneMemberID="viewController">
                     <view key="view" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="808" height="533"/>
+                        <rect key="frame" x="0.0" y="0.0" width="872" height="533"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S0W-A4-Kj1">
@@ -757,13 +758,13 @@
                                 </connections>
                             </button>
                             <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aQS-BF-6u6">
-                                <rect key="frame" x="670" y="149" width="121" height="135"/>
+                                <rect key="frame" x="670" y="70" width="121" height="214"/>
                                 <clipView key="contentView" ambiguous="YES" id="7KC-3O-We8">
-                                    <rect key="frame" x="1" y="0.0" width="119" height="134"/>
+                                    <rect key="frame" x="1" y="0.0" width="119" height="213"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="XaM-x5-OxX" viewBased="YES" id="kqT-Vo-Dwj">
-                                            <rect key="frame" x="0.0" y="0.0" width="119" height="111"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="119" height="190"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -811,11 +812,23 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jVj-qS-EOB">
+                                <rect key="frame" x="664" y="38" width="80" height="32"/>
+                                <buttonCell key="cell" type="push" title="Export" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Zqz-8J-JSh">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="exportButtonClick:" target="XfG-lQ-9wD" id="Lga-8Q-qJs"/>
+                                </connections>
+                            </button>
+                            <stackView distribution="fill" orientation="vertical" alignment="leading" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" fixedFrame="YES" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5G6-jT-Ir5">
+                                <rect key="frame" x="735" y="305" width="110" height="200"/>
+                            </stackView>
                         </subviews>
                     </view>
                     <connections>
                         <outlet property="chanTable" destination="kqT-Vo-Dwj" id="PLK-wi-gzU"/>
-                        <outlet property="chanTableHeader" destination="XaM-x5-OxX" id="M0v-z8-nur"/>
                         <outlet property="channelLabel" destination="kod-GV-R14" id="3t2-gY-gmJ"/>
                         <outlet property="countLabel" destination="JzY-ny-6fN" id="x6D-nd-d4X"/>
                         <outlet property="imageView" destination="S0W-A4-Kj1" id="9ra-Hu-fgP"/>
@@ -825,7 +838,7 @@
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController representsSharedInstance="YES" id="ojk-dU-9wf"/>
             </objects>
-            <point key="canvasLocation" x="239" y="786.5"/>
+            <point key="canvasLocation" x="271" y="786.5"/>
         </scene>
     </scenes>
 </document>

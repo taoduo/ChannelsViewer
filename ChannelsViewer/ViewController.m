@@ -14,8 +14,8 @@
 @synthesize channelLabel;
 @synthesize linesBox;
 @synthesize chanTable;
-@synthesize chanTableHeader;
 @synthesize currentChannels;
+
 NSMutableArray *fileList;
 signed int currentIndex;
 int total;
@@ -96,6 +96,7 @@ NSMutableDictionary *freqChanMap;
  */
 - (void)readFrequency: (NSURL*) url {
     [linesBox removeAllItems];
+    [freqChanMap removeAllObjects];
     NSString *str = [NSString stringWithContentsOfFile:[url path] encoding:NSUTF8StringEncoding error: nil];
     NSArray *freqstr=[str componentsSeparatedByString:@"\n"];
     for (NSString *str in freqstr) {
@@ -162,5 +163,30 @@ NSMutableDictionary *freqChanMap;
     NSString *si = [cb objectValueOfSelectedItem];
     currentChannels = [freqChanMap valueForKey:si];
     [chanTable reloadData];
+}
+
+-(IBAction)exportButtonClick:(id)sender {
+    NSString *filename = @"summary";
+    for (id key in freqChanMap) {
+        filename = [NSString stringWithFormat:@"%@_%@", filename, key];
+    }
+    filename = [NSString stringWithFormat:@"%@_%@", filename, @".txt"];
+    [[NSFileManager defaultManager] createFileAtPath:filename contents:nil attributes:nil];
+    NSString *toWrite = @"Summary";
+    for (id key in freqChanMap) {
+        toWrite = [NSString stringWithFormat:@"%@%@", toWrite, [NSString stringWithFormat:@"\n--- %@ Hz ---\n", key]];
+        NSMutableArray *chns = [freqChanMap valueForKey:key];
+        for (NSString* c in chns) {
+            toWrite = [NSString stringWithFormat:@"%@%@", toWrite, [NSString stringWithFormat:@"%@\n", c]];
+        }
+    }
+    BOOL success = [toWrite writeToFile:filename atomically:true encoding:NSUTF8StringEncoding error:nil];
+    if (success) {
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert addButtonWithTitle:@"OK"];
+        [alert setMessageText:@"Export Complete"];
+        [alert setAlertStyle:NSInformationalAlertStyle];
+        [alert runModal];
+    }
 }
 @end
