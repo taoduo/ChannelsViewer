@@ -33,12 +33,10 @@ NSURL *dataRoot;
 }
 
 - (NSInteger) numberOfRowsInTableView:(NSTableView *)tableView {
-    // NSLog(@"num:%d",  (int)[currentChannels count]);
     return [currentChannels count];
 }
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    // NSLog(@"%@", currentChannels[row]);
     return currentChannels[row];
 }
 
@@ -55,6 +53,14 @@ NSURL *dataRoot;
     NSString *text = [NSString stringWithFormat:@"%d / %d", currentIndex, total];
     [countLabel setStringValue:text];
     [channelLabel setStringValue: [[fileList[currentIndex] absoluteString] lastPathComponent]];
+}
+
+- (void) alert: (NSString*) msg {
+    NSAlert *alert = [[NSAlert alloc] init];
+    [alert addButtonWithTitle:@"OK"];
+    [alert setMessageText:[NSString stringWithFormat: @"%@", msg]];
+    [alert setAlertStyle:NSInformationalAlertStyle];
+    [alert runModal];
 }
 
 /**
@@ -103,6 +109,9 @@ NSURL *dataRoot;
     NSString *str = [NSString stringWithContentsOfFile:[url path] encoding:NSUTF8StringEncoding error: nil];
     NSArray *freqstr=[str componentsSeparatedByString:@"\n"];
     for (NSString *str in freqstr) {
+        if ([str length] == 0) {
+            continue;
+        }
         freqChanMap[str] = [[NSMutableArray alloc] init];
         [linesBox addItemWithObjectValue:str];
     }
@@ -148,12 +157,9 @@ NSURL *dataRoot;
 }
 
 - (IBAction)addButtonClick:(id)sender {
-    /* NSString *selectedItem = [linesBox objectValueOfSelectedItem];
-    NSMutableArray *channels = [freqChanMap objectForKey:selectedItem]; */
     // get the channel name (file name)
     NSString *channelName = [[fileList[currentIndex] URLByDeletingPathExtension] lastPathComponent];
     [currentChannels addObject:channelName];
-    // NSLog(@"%d", (int) [currentChannels count]);
     [chanTable reloadData];
 }
 
@@ -167,42 +173,51 @@ NSURL *dataRoot;
  * Export: a summary txt and all the pictures of the channels
  */
 -(IBAction)exportButtonClick:(id)sender {
+    NSError *error;
+    BOOL s;
     NSFileManager *fileManager = [NSFileManager defaultManager];
+    // get the summary file name
     NSString *filename = @"Summary";
     for (id key in freqChanMap) {
         filename = [NSString stringWithFormat:@"%@_%@", filename, key];
     }
-    filename = [NSString stringWithFormat:@"%@_%@", filename, @".txt"];
+    filename = [NSString stringWithFormat:@"%@%@", filename, @".txt"];
+    
+    // create the txt file
     [[NSFileManager defaultManager] createFileAtPath:filename contents:nil attributes:nil];
+    
+    // string to write
     NSString *toWrite = @"Summary";
     for (id key in freqChanMap) {
         toWrite = [NSString stringWithFormat:@"%@%@", toWrite, [NSString stringWithFormat:@"\n--- %@ Hz ---\n", key]];
         NSMutableArray *chns = [freqChanMap valueForKey:key];
-        NSURL *targetDir = [NSURL URLWithString:[NSString stringWithFormat:@"line_%@", key]];
-        [fileManager createDirectoryAtPath:[targetDir path] withIntermediateDirectories:NO attributes:nil error:nil];
+        NSURL *targetDir = [NSURL URLWithString:[NSString stringWithFormat:@"%@/line_%@", [fileManager currentDirectoryPath], key]];
+        s = [fileManager createDirectoryAtPath:[targetDir path] withIntermediateDirectories:NO attributes:nil error:&error];
+        if (!s) {
+            [self alert: [error localizedDescription]];
+        }
         for (NSString* c in chns) {
             // for summary.txt
             toWrite = [NSString stringWithFormat:@"%@%@", toWrite, [NSString stringWithFormat:@"%@\n", c]];
             // original picture path
             NSURL *fp = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@/%@.jpg", [dataRoot absoluteString], c]];
+            NSLog(@"%@", [fp path]);
             // target path
-            NSURL *ft = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@/%@/%@.jpg", [fileManager currentDirectoryPath], [targetDir absoluteString], c]];
+            NSURL *ft = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@/%@.jpg", [targetDir absoluteString], c]];
+            NSLog(@"%@", [ft path]);
             // copy from origin to targetDir
-            NSError *error;
-            BOOL s = [fileManager copyItemAtURL:fp toURL:ft error:&error];
+            s = [fileManager copyItemAtURL:fp toURL:ft error:&error];
             if (!s) {
-                NSLog(@"Write failed with error: %@", error);
+                [self alert: [NSString stringWithFormat:@"Copy failed with error: %@", error]];
             }
         }
     }
-    BOOL success = [toWrite writeToFile:filename atomically:true encoding:NSUTF8StringEncoding error:nil];
+    s = [toWrite writeToFile:filename atomically:true encoding:NSUTF8StringEncoding error:&error];
     
-    if (success) {
-        NSAlert *alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:@"OK"];
-        [alert setMessageText:@"Export Complete"];
-        [alert setAlertStyle:NSInformationalAlertStyle];
-        [alert runModal];
-    }   
+    if (s) {
+        [self alert: @"Export Complete"];
+    } else {
+        [self alert:[NSString stringWithFormat: @"Write failed with error: %@", [error localizedDescription]]];
+    }
 }
 @end
