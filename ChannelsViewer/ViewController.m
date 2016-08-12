@@ -176,6 +176,36 @@ NSURL *dataRoot;
     NSError *error;
     BOOL s;
     NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *targetDir = [NSURL URLWithString: [NSString stringWithFormat:@"file://%@", [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent]]];
+
+    // string to write
+    NSString *toWrite = @"Summary";
+    NSURL *f;
+    NSMutableArray *chns;
+    for (id key in freqChanMap) {
+        toWrite = [NSString stringWithFormat:@"%@%@", toWrite, [NSString stringWithFormat:@"\n--- %@ Hz ---\n", key]];
+        chns = [freqChanMap valueForKey:key];
+        s = [fileManager createDirectoryAtPath: [NSString stringWithFormat: @"%@/line_%@", [targetDir path], key] withIntermediateDirectories:NO attributes:nil error:&error];
+        if (!s) {
+            [self alert: [NSString stringWithFormat:@"Create Directory Error: %@\nDir:%@", [error localizedDescription], [targetDir path]]];
+        } else {
+            f = [NSURL URLWithString: [NSString stringWithFormat: @"%@/line_%@", [targetDir path], key]];
+            for (NSString* c in chns) {
+                // the folder created
+                // for summary.txt
+                toWrite = [NSString stringWithFormat:@"%@%@", toWrite, [NSString stringWithFormat:@"%@\n", c]];
+                // original picture path
+                NSURL *o = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@/%@.jpg", [dataRoot absoluteString], c]];
+                // target path
+                NSURL *d = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@/%@.jpg", [f absoluteString], c]];
+                // copy from origin to targetDir
+                s = [fileManager copyItemAtURL:o toURL:d error:&error];
+                if (!s) {
+                    [self alert: [NSString stringWithFormat:@"Copy failed with error: %@", error]];
+                }
+            }
+        }
+    }
     // get the summary file name
     NSString *filename = @"Summary";
     for (id key in freqChanMap) {
@@ -183,41 +213,12 @@ NSURL *dataRoot;
     }
     filename = [NSString stringWithFormat:@"%@%@", filename, @".txt"];
     
-    // create the txt file
-    [[NSFileManager defaultManager] createFileAtPath:filename contents:nil attributes:nil];
-    
-    // string to write
-    NSString *toWrite = @"Summary";
-    for (id key in freqChanMap) {
-        toWrite = [NSString stringWithFormat:@"%@%@", toWrite, [NSString stringWithFormat:@"\n--- %@ Hz ---\n", key]];
-        NSMutableArray *chns = [freqChanMap valueForKey:key];
-        NSURL *targetDir = [NSURL URLWithString:[NSString stringWithFormat:@"%@/line_%@", [fileManager currentDirectoryPath], key]];
-        s = [fileManager createDirectoryAtPath:[targetDir path] withIntermediateDirectories:NO attributes:nil error:&error];
-        if (!s) {
-            [self alert: [error localizedDescription]];
-        }
-        for (NSString* c in chns) {
-            // for summary.txt
-            toWrite = [NSString stringWithFormat:@"%@%@", toWrite, [NSString stringWithFormat:@"%@\n", c]];
-            // original picture path
-            NSURL *fp = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@/%@.jpg", [dataRoot absoluteString], c]];
-            NSLog(@"%@", [fp path]);
-            // target path
-            NSURL *ft = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@/%@.jpg", [targetDir absoluteString], c]];
-            NSLog(@"%@", [ft path]);
-            // copy from origin to targetDir
-            s = [fileManager copyItemAtURL:fp toURL:ft error:&error];
-            if (!s) {
-                [self alert: [NSString stringWithFormat:@"Copy failed with error: %@", error]];
-            }
-        }
-    }
-    s = [toWrite writeToFile:filename atomically:true encoding:NSUTF8StringEncoding error:&error];
-    
+    // write to the file
+    s = [toWrite writeToFile: [NSString stringWithFormat:@"%@/%@", [targetDir path], filename] atomically:true encoding:NSUTF8StringEncoding error:&error];
     if (s) {
         [self alert: @"Export Complete"];
     } else {
-        [self alert:[NSString stringWithFormat: @"Write failed with error: %@", [error localizedDescription]]];
+        [self alert: [NSString stringWithFormat: @"Write failed with error: %@\n%@", [error localizedDescription], [NSString stringWithFormat:@"%@/%@", [targetDir path], filename]]];
     }
 }
 @end
