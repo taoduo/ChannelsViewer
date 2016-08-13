@@ -169,6 +169,12 @@ NSURL *dataRoot;
     currentChannels = [freqChanMap valueForKey:si];
     [chanTable reloadData];
 }
+
+-(NSString*) processFolderName: (NSString*) on {
+    NSArray* arr = [on componentsSeparatedByString:@"_"];
+    NSString* nn = [NSString stringWithFormat:@"result_%@_%@", arr[[arr count] - 2], arr[[arr count] - 1]];
+    return nn;
+}
 /*
  * Export: a summary txt and all the pictures of the channels
  */
@@ -176,7 +182,9 @@ NSURL *dataRoot;
     NSError *error;
     BOOL s;
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *targetDir = [NSURL URLWithString: [NSString stringWithFormat:@"file://%@/%@", [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent], [[dataRoot path] lastPathComponent]]];
+    NSString* on = [[dataRoot path] lastPathComponent];
+    NSString* nn = [self processFolderName:on];
+    NSURL *targetDir = [NSURL URLWithString: [NSString stringWithFormat:@"file://%@/%@", [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent], nn]];
     // string to write
     NSString *toWrite = @"Summary";
     NSURL *f;
