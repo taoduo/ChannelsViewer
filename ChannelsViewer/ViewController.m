@@ -176,12 +176,12 @@ NSURL *dataRoot;
     NSError *error;
     BOOL s;
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *targetDir = [NSURL URLWithString: [NSString stringWithFormat:@"file://%@", [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent]]];
-
+    NSURL *targetDir = [NSURL URLWithString: [NSString stringWithFormat:@"file://%@/%@", [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent], [[dataRoot path] lastPathComponent]]];
     // string to write
     NSString *toWrite = @"Summary";
     NSURL *f;
     NSMutableArray *chns;
+    s = [fileManager createDirectoryAtPath: [targetDir path] withIntermediateDirectories:NO attributes:nil error:nil];
     for (id key in freqChanMap) {
         toWrite = [NSString stringWithFormat:@"%@%@", toWrite, [NSString stringWithFormat:@"\n--- %@ Hz ---\n", key]];
         chns = [freqChanMap valueForKey:key];
